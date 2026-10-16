@@ -16,4 +16,5 @@ Newest first. See [RULE-0016](../harness/rules/RULE-0016-changelog-format.md).
 - `OnlineDelivery.Api.http` and `README.md` use port 5154 and the health endpoint
 
 ### Removed
+- The Swagger template comment in `Program.cs`, which named no artefact (RULE-0004)
 - The `WeatherForecast` template controller and model
