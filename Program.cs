@@ -1,37 +1,42 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(options =>
+// Allowed browser origins come from configuration, and an empty list allows none: ADR-0001.
+const string AppCorsPolicy = "App";
+builder.Services.AddCors();
+builder.Services.AddOptions<CorsOptions>().Configure<IConfiguration>((options, configuration) =>
 {
-    options.AddPolicy("ReactApp", policy =>
-    {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    var origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+    options.AddPolicy(AppCorsPolicy, policy => policy.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod());
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    // Development serves plain HTTP on localhost: ADR-0002.
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
+// CORS before authorization, so refused calls still carry CORS headers: ADR-0001.
+app.UseCors(AppCorsPolicy);
 
 app.UseAuthorization();
-
-app.UseCors("ReactApp");
 
 app.MapControllers();
 
 app.Run();
+
+// Lets the in-memory test server start this API: ADR-0003.
+public partial class Program;

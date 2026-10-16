@@ -1,19 +1,17 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineDelivery.Api.Dtos;
 
 namespace OnlineDelivery.Api.Controllers;
 
 [ApiController]
+[AllowAnonymous]
 [Route("api/v1/health")]
 public class HealthController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get()
+    public ActionResult<HealthResponse> Get()
     {
-        return Ok(new
-        {
-            status = "healthy",
-            service = "online-delivery-api",
-            timestamp = DateTime.UtcNow
-        });
+        return Ok(new HealthResponse("healthy", "online-delivery-api", DateTime.UtcNow));
     }
 }
