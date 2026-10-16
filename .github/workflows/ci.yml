@@ -21,6 +21,6 @@ jobs:
       - run: dotnet format OnlineDelivery.Api.csproj --verify-no-changes
       - run: dotnet build OnlineDelivery.Api.csproj -warnaserror --nologo
       - run: |
-          projs=$(find tests -name '*Tests.csproj' 2>/dev/null)
+          projs=$(find tests -name '*Tests.csproj' 2>/dev/null || true)
           if [ -z "$projs" ]; then echo "no test project yet"; exit 0; fi
           for p in $projs; do dotnet test "$p" --nologo || exit 1; done

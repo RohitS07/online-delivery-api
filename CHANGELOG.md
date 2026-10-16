@@ -9,6 +9,7 @@ Newest first. See [RULE-0016](../harness/rules/RULE-0016-changelog-format.md).
 - User secrets, holding the connection string; `.env.example` for Docker Compose
 
 ### Changed
+- CI's test step passes when there is no `tests/` folder yet
 - The PostgreSQL password comes from `.env` and user-secrets, never a tracked file (RULE-0014)
 - `OnlineDelivery.Api.http` and `README.md` use port 5154 and the health endpoint
 
