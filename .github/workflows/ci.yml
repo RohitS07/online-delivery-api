@@ -1,0 +1,26 @@
+# The same checks as `make lint-api typecheck-api test-api` in the workspace (RULE-0019).
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      # Format, lint and types before the tests.
+      - run: dotnet format OnlineDelivery.Api.csproj --verify-no-changes
+      - run: dotnet build OnlineDelivery.Api.csproj -warnaserror --nologo
+      - run: |
+          projs=$(find tests -name '*Tests.csproj' 2>/dev/null || true)
+          if [ -z "$projs" ]; then echo "no test project yet"; exit 0; fi
+          for p in $projs; do dotnet test "$p" --nologo || exit 1; done

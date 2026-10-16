@@ -1,6 +1,6 @@
 @OnlineDelivery.Api_HostAddress = http://localhost:5154
 
-GET {{OnlineDelivery.Api_HostAddress}}/weatherforecast/
+GET {{OnlineDelivery.Api_HostAddress}}/api/v1/health
 Accept: application/json
 
 ###
