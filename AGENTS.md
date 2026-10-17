@@ -30,7 +30,10 @@ Run from the workspace root, or the `dotnet` command directly here.
 - async/await for database, HTTP, PDF, SMS and AI calls.
 - Every schema change is a migration, made with the pinned `dotnet-ef` in `.config/dotnet-tools.json`. Seed data every environment needs goes in a migration ([ADR-0004](../context/adr/ADR-0004-store-data-in-postgresql-through-ef-core-with-migrations.md)).
 - Development applies migrations on start-up. Other environments run them as a deployment step.
-- The connection string is `ConnectionStrings:DefaultConnection`, in user-secrets.
+- The connection string is `ConnectionStrings:DefaultConnection`, and the token key is `Jwt:SigningKey` (at least 32 bytes), both in user-secrets. The API refuses to start without the key.
+- Read the time only through the injected `TimeProvider`, never `DateTime.Now` or `DateTime.UtcNow` ([ADR-0007](../context/adr/ADR-0007-business-dates-and-times-are-in-india-standard-time-from-an-injected-clock.md)).
+- Errors are `ProblemDetails` with a `code`, made by `ApiProblems` ([ADR-0010](../context/adr/ADR-0010-the-app-shows-text-in-english-and-marathi-and-the-api-sends-codes.md)).
+- Outside providers sit behind interfaces, such as `IOtpSender` ([ADR-0009](../context/adr/ADR-0009-outside-providers-sit-behind-interfaces-with-mocks-first.md)).
 - Secrets live in user-secrets locally and in Azure Key Vault in production. Never in `appsettings*.json`.
 - Comments are rare and name the artefact they implement: `// Max three OTP attempts: NFR-0002.`
 
@@ -40,7 +43,9 @@ Test projects live in `tests/`, named `<Area>.Tests`, and are added to `OnlineDe
 They use xUnit and run the API in memory with `WebApplicationFactory<Program>` ([ADR-0003](../context/adr/ADR-0003-test-the-api-with-xunit-and-the-app-with-vitest.md)).
 Every test class joins the `Api` collection and gets `Support/ApiFactory`, which starts one real
 PostgreSQL in Docker with Testcontainers ([ADR-0004](../context/adr/ADR-0004-store-data-in-postgresql-through-ef-core-with-migrations.md)). Docker must be running for `dotnet test`.
-A test that changes shared data puts it back in a `finally`.
+A test that changes shared data puts it back in a `finally`. The factory replaces the clock with a
+`FakeTimeProvider` and the OTP sender with `RecordingOtpSender`. Sign-in tests use `AuthSupport.NewMobileNumber()`,
+so no two tests share a number.
 `OnlineDelivery.Api.csproj` excludes `tests/**`, because the API project sits at the repository
 root. An acceptance criterion binds to a test as
 `test:online-delivery-api/tests/<Area>.Tests/<File>.cs::<Method>`.
