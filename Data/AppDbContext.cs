@@ -11,6 +11,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<City> Cities => Set<City>();
     public DbSet<Village> Villages => Set<Village>();
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<OtpChallenge> OtpChallenges => Set<OtpChallenge>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +55,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 new Category { Id = 4, NameEn = "Dairy", NameMr = "दुग्धजन्य पदार्थ", IsActive = true },
                 new Category { Id = 5, NameEn = "Household", NameMr = "घरगुती वस्तू", IsActive = true },
                 new Category { Id = 6, NameEn = "Personal care", NameMr = "वैयक्तिक काळजी", IsActive = true });
+        });
+
+        modelBuilder.Entity<User>(user =>
+        {
+            user.Property(u => u.MobileNumber).HasMaxLength(13);
+            user.HasIndex(u => u.MobileNumber).IsUnique();
+            user.Property(u => u.Name).HasMaxLength(100);
+            user.Property(u => u.Role).HasConversion<string>().HasMaxLength(20);
+            user.Property(u => u.Status).HasConversion<string>().HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<OtpChallenge>(challenge =>
+        {
+            challenge.Property(c => c.MobileNumber).HasMaxLength(13);
+            challenge.Property(c => c.CodeHash).HasMaxLength(64);
+            challenge.HasIndex(c => new { c.MobileNumber, c.CreatedAt });
         });
     }
 }

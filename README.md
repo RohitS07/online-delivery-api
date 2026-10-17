@@ -26,6 +26,7 @@ specs. From the workspace root, `make install`, `make db-up` and `make run-api` 
    ```bash
    dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
      "Host=localhost;Port=5432;Database=online_delivery;Username=postgres;Password=<your password>"
+   dotnet user-secrets set "Jwt:SigningKey" "$(openssl rand -base64 48)"
    ```
 3. Start the database and the API:
    ```bash
@@ -41,6 +42,13 @@ http://localhost:5154/api/v1
 ```
 
 Health check: `GET /api/v1/health`. Reference data: `GET /api/v1/cities`, `GET /api/v1/categories`.
+
+## Signing in locally
+
+Development seeds a demo admin, customer and agent from `appsettings.Development.json`
+(`+91 60000 00001` to `00003`). No SMS is sent. The mock sender writes each code to the API log as
+`Mock OTP for <number>: <code>`. For demos, `dotnet user-secrets set "Otp:Mock:FixedCode" "123456"`
+makes every Development code the same.
 
 ## Database
 
