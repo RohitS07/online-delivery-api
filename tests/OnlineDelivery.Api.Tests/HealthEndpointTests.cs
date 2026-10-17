@@ -2,10 +2,12 @@ using System.Globalization;
 using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using OnlineDelivery.Api.Tests.Support;
 
 namespace OnlineDelivery.Api.Tests;
 
-public class HealthEndpointTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+[Collection(ApiCollection.Name)]
+public class HealthEndpointTests(ApiFactory factory)
 {
     // AC-0001-01: the body is the HealthResponse of SPEC-0001.
     [Fact]

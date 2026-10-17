@@ -2,6 +2,19 @@
 
 Newest first. See [RULE-0016](../harness/rules/RULE-0016-changelog-format.md).
 
+## 2026-10-18
+
+### Added
+- [US-0004](../context/stories/US-0004-anyone-can-list-the-active-cities-villages-and-categories.md): `GET /api/v1/cities` and `GET /api/v1/categories` ([SPEC-0002](../context/specs/SPEC-0002-cities-villages-and-categories.md)), with `ReferenceDataService` and DTOs
+- PostgreSQL through EF Core and Npgsql ([ADR-0004](../context/adr/ADR-0004-store-data-in-postgresql-through-ef-core-with-migrations.md)): `AppDbContext`, the `City`, `Village` and `Category` entities, and the `AddReferenceData` migration with the seed cities, villages and categories
+- `.config/dotnet-tools.json`, pinning `dotnet-ef`
+- `Support/ApiFactory` in the tests: one PostgreSQL per test run, started by Testcontainers
+
+### Changed
+- Development applies pending migrations on start-up
+- Every test class shares the `Api` collection, so all tests run against a real database
+- `AGENTS.md` and `README.md`: migrations, the connection string name, and Docker for tests
+
 ## 2026-10-16
 
 ### Added
@@ -16,5 +29,5 @@ Newest first. See [RULE-0016](../harness/rules/RULE-0016-changelog-format.md).
 - `OnlineDelivery.Api.http` and `README.md` use port 5154 and the health endpoint
 
 ### Removed
-- The Swagger template comment in `Program.cs`, which named no artefact (RULE-0004)
+- The Swagger template comment in `Program.cs`, which named no artefact ([RULE-0004](../harness/rules/RULE-0004-comments-are-short-and-name-the-artefact.md))
 - The `WeatherForecast` template controller and model

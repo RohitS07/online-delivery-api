@@ -40,4 +40,15 @@ In production, secrets come from Azure Key Vault.
 http://localhost:5154/api/v1
 ```
 
-Health check: `GET /api/v1/health`.
+Health check: `GET /api/v1/health`. Reference data: `GET /api/v1/cities`, `GET /api/v1/categories`.
+
+## Database
+
+In Development the API applies pending EF Core migrations when it starts. To add one:
+
+```bash
+dotnet tool restore
+dotnet ef migrations add <Name>
+```
+
+Tests start their own PostgreSQL in Docker, so Docker must be running for `dotnet test`.
