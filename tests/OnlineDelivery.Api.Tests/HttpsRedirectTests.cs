@@ -1,10 +1,12 @@
 using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using OnlineDelivery.Api.Tests.Support;
 
 namespace OnlineDelivery.Api.Tests;
 
-public class HttpsRedirectTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+[Collection(ApiCollection.Name)]
+public class HttpsRedirectTests(ApiFactory factory)
 {
     private static readonly WebApplicationFactoryClientOptions NoRedirects = new() { AllowAutoRedirect = false };
 

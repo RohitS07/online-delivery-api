@@ -6,7 +6,8 @@ using OnlineDelivery.Api.Tests.Support;
 
 namespace OnlineDelivery.Api.Tests;
 
-public class CorsTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+[Collection(ApiCollection.Name)]
+public class CorsTests(ApiFactory factory)
 {
     private const string AppOrigin = "http://localhost:5173";
     private const string OtherOrigin = "https://unlisted.example";
